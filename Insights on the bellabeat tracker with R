@@ -1,0 +1,185 @@
+## Install packages
+install.packages("tidyverse")
+install.packages("ggplot2")
+install.packages("lubridate")
+install.packages("readr")
+install.packages("dplyr")
+install.packages("tidyr")
+library(tidyverse)
+library(ggplot2)
+library(lubridate)
+library(readr)
+library(dplyr)
+library(tidyr)
+
+##Import .csv files
+Activity <- read.csv("Fitbit_data/Fitabase Data 3.12.16-4.11.16/dailyActivity_merged.csv")
+Weight <- read.csv("Fitbit_data/Fitabase Data 3.12.16-4.11.16/weightLogInfo_merged.csv")
+Sleep <-read_csv("Fitbit_data/Fitabase Data 4.12.16-5.12.16/sleepDay_merged.csv")
+Calories <- read_csv("Fitbit_data/Fitabase Data 3.12.16-4.11.16/hourlyCalories_merged.csv")
+Intensities <- read_csv("Fitbit_data/Fitabase Data 3.12.16-4.11.16/hourlySteps_merged.csv")
+
+##Fixing formatting
+
+Calories$ActivityHour <- as.POSIXct(Calories$ActivityHour, format = "%m/%d/%Y %H:%M:%S" )
+Calories$Date <- as.Date(Calories$ActivityHour, format = "%m-%d-%Y")
+Calories$Time <- format(Calories$ActivityHour, format = "%H:%M:%S")
+
+Intensities$ActivityHour <- as.POSIXct(Intensities$ActivityHour, format ="%m/%d/%Y %H:%M:%S")
+Intensities$Date <- as.Date(Intensities$ActivityHour, format = "%m-%d-%Y")
+Intensities$Time <- format(Intensities$ActivityHour, format = "%H:%M:%S")
+
+Sleep$SleepDay <- as.POSIXct(Sleep$SleepDay, format = "%m/%d/%Y %H:%M:%S" )
+Sleep$Date <- as.Date(Sleep$SleepDay, format = "%m-%d-%Y")
+Sleep$Time <- format(Sleep$SleepDay, format = "%H:%M:%S")
+
+Weight$Date <- as.POSIXct(Weight$Date, format = "%m/%d/%Y %H:%M:%S" )
+Weight$Date <- as.Date(Weight$Date, format = "%m-%d-%Y")
+Weight$Time <- format(Weight$Date, format = "%H:%M:%S" )
+
+##Explore the data
+
+n_distinct(Activity$Id)
+n_distinct(Calories$Id)
+n_distinct(Intensities$Id)
+n_distinct(Sleep$Id)
+n_distinct(Weight$Id)
+
+> n_distinct(Activity$Id)
+[1] 35
+> n_distinct(Calories$Id)
+[1] 34
+> n_distinct(Intensities$Id)
+[1] 34
+> n_distinct(Sleep$Id)
+[1] 24
+> n_distinct(Weight$Id)
+[1] 11
+
+## Summarise data
+
+summary(Sleep)
+Id               SleepDay                      TotalSleepRecords TotalMinutesAsleep TotalTimeInBed 
+Min.   :1.504e+09   Min.   :2016-04-12 12:00:00.00   Min.   :1.000     Min.   : 58.0      Min.   : 61.0  
+1st Qu.:3.977e+09   1st Qu.:2016-04-19 12:00:00.00   1st Qu.:1.000     1st Qu.:361.0      1st Qu.:403.0  
+Median :4.703e+09   Median :2016-04-27 12:00:00.00   Median :1.000     Median :433.0      Median :463.0  
+Mean   :5.001e+09   Mean   :2016-04-27 00:40:05.80   Mean   :1.119     Mean   :419.5      Mean   :458.6  
+3rd Qu.:6.962e+09   3rd Qu.:2016-05-04 12:00:00.00   3rd Qu.:1.000     3rd Qu.:490.0      3rd Qu.:526.0  
+Max.   :8.792e+09   Max.   :2016-05-12 12:00:00.00   Max.   :3.000     Max.   :796.0      Max.   :961.0  
+Date                Time          
+Min.   :2016-04-12   Length:413        
+1st Qu.:2016-04-19   Class :character  
+Median :2016-04-27   Mode  :character  
+Mean   :2016-04-26                     
+3rd Qu.:2016-05-04                     
+Max.   :2016-05-12    
+
+## Average hours sleeping is 7h for 7.6h spent in bed
+
+summary(Activity)
+Id            ActivityDate         TotalSteps    TotalDistance    TrackerDistance LoggedActivitiesDistance
+Min.   :1.504e+09   Length:457         Min.   :    0   Min.   : 0.000   Min.   : 0.00   Min.   :0.0000          
+1st Qu.:2.347e+09   Class :character   1st Qu.: 1988   1st Qu.: 1.410   1st Qu.: 1.28   1st Qu.:0.0000          
+Median :4.057e+09   Mode  :character   Median : 5986   Median : 4.090   Median : 4.09   Median :0.0000          
+Mean   :4.629e+09                      Mean   : 6547   Mean   : 4.664   Mean   : 4.61   Mean   :0.1794          
+3rd Qu.:6.392e+09                      3rd Qu.:10198   3rd Qu.: 7.160   3rd Qu.: 7.11   3rd Qu.:0.0000          
+Max.   :8.878e+09                      Max.   :28497   Max.   :27.530   Max.   :27.53   Max.   :6.7271          
+VeryActiveDistance ModeratelyActiveDistance LightActiveDistance SedentaryActiveDistance VeryActiveMinutes
+Min.   : 0.000     Min.   :0.0000           Min.   : 0.00       Min.   :0.000000        Min.   :  0.00   
+1st Qu.: 0.000     1st Qu.:0.0000           1st Qu.: 0.87       1st Qu.:0.000000        1st Qu.:  0.00   
+Median : 0.000     Median :0.0200           Median : 2.93       Median :0.000000        Median :  0.00   
+Mean   : 1.181     Mean   :0.4786           Mean   : 2.89       Mean   :0.001904        Mean   : 16.62   
+3rd Qu.: 1.310     3rd Qu.:0.6700           3rd Qu.: 4.46       3rd Qu.:0.000000        3rd Qu.: 25.00   
+Max.   :21.920     Max.   :6.4000           Max.   :12.51       Max.   :0.100000        Max.   :202.00   
+FairlyActiveMinutes LightlyActiveMinutes SedentaryMinutes    Calories   
+Min.   :  0.00      Min.   :  0.0        Min.   :  32.0   Min.   :   0  
+1st Qu.:  0.00      1st Qu.: 64.0        1st Qu.: 728.0   1st Qu.:1776  
+Median :  1.00      Median :181.0        Median :1057.0   Median :2062  
+Mean   : 13.07      Mean   :170.1        Mean   : 995.3   Mean   :2189  
+3rd Qu.: 16.00      3rd Qu.:257.0        3rd Qu.:1285.0   3rd Qu.:2667  
+Max.   :660.00      Max.   :720.0        Max.   :1440.0   Max.   :4562  
+
+## Lightly active minutes sont privilegies: almost 3h for 20 mins Very active.
+## Sedentary minutes are the biggest: over 16h, maybe a reminder to work out or establishing a goal for the day could help.
+## Total steps are mean 6547 which is a bit above what is recommended (5000) to see benefits.
+## Step tracker goal could help.
+
+summary(Weight)
+Id                 Date               WeightKg       WeightPounds        Fat          BMI       
+Min.   :1.504e+09   Min.   :2016-03-30   Min.   : 53.30   Min.   :117.5   Min.   :10   Min.   :21.45  
+1st Qu.:4.703e+09   1st Qu.:2016-04-04   1st Qu.: 61.70   1st Qu.:136.0   1st Qu.:13   1st Qu.:24.10  
+Median :6.962e+09   Median :2016-04-06   Median : 62.50   Median :137.8   Median :16   Median :24.39  
+Mean   :6.477e+09   Mean   :2016-04-05   Mean   : 73.44   Mean   :161.9   Mean   :16   Mean   :25.73  
+3rd Qu.:8.878e+09   3rd Qu.:2016-04-08   3rd Qu.: 85.80   3rd Qu.:189.2   3rd Qu.:19   3rd Qu.:25.76  
+Max.   :8.878e+09   Max.   :2016-04-12   Max.   :129.60   Max.   :285.7   Max.   :22   Max.   :46.17  
+NA's   :31                  
+ IsManualReport         LogId               Time          
+ Length:33          Min.   :1.459e+12   Length:33         
+ Class :character   1st Qu.:1.460e+12   Class :character  
+ Mode  :character   Median :1.460e+12   Mode  :character  
+                    Mean   :1.460e+12                     
+                    3rd Qu.:1.460e+12                     
+                    Max.   :1.461e+12
+                    
+## According to BMI above 25 is overweight and above 30 is obesity : 2 ID are obese, the rest is divided between overweight and normal weight.
+## Not a lot of people obese are using these items, focus marketing on staying active for people without a weight problem.
+
+
+summary(Intensities)
+       Id             ActivityHour                     StepTotal            Date                Time          
+ Min.   :1.504e+09   Min.   :2016-03-12 01:00:00.0   Min.   :    0.0   Min.   :2016-03-12   Length:24084      
+ 1st Qu.:2.347e+09   1st Qu.:2016-03-19 07:00:00.0   1st Qu.:    0.0   1st Qu.:2016-03-19   Class :character  
+ Median :4.559e+09   Median :2016-03-27 03:00:00.0   Median :   10.0   Median :2016-03-27   Mode  :character  
+ Mean   :4.889e+09   Mean   :2016-03-27 00:21:02.7   Mean   :  286.2   Mean   :2016-03-26                     
+ 3rd Qu.:6.962e+09   3rd Qu.:2016-04-03 11:00:00.0   3rd Qu.:  289.0   3rd Qu.:2016-04-03                     
+ Max.   :8.878e+09   Max.   :2016-04-12 12:00:00.0   Max.   :10565.0   Max.   :2016-04-12                     
+                     NA's   :66                                        NA's   :66     
+
+## Intense Step total mean 286.2.                 
+## Step tracker goal could help.
+
+summary(Calories)
+Id             ActivityHour                      Calories           Date                Time          
+ Min.   :1.504e+09   Min.   :2016-03-12 00:00:00.0   Min.   : 42.00   Min.   :2016-03-12   Length:24084      
+ 1st Qu.:2.347e+09   1st Qu.:2016-03-19 14:00:00.0   1st Qu.: 61.00   1st Qu.:2016-03-19   Class :character  
+ Median :4.559e+09   Median :2016-03-27 04:00:00.0   Median : 77.00   Median :2016-03-27   Mode  :character  
+ Mean   :4.889e+09   Mean   :2016-03-27 05:47:23.2   Mean   : 94.27   Mean   :2016-03-26                     
+ 3rd Qu.:6.962e+09   3rd Qu.:2016-04-03 20:00:00.0   3rd Qu.:104.00   3rd Qu.:2016-04-03                     
+ Max.   :8.878e+09   Max.   :2016-04-12 10:00:00.0   Max.   :933.00   Max.   :2016-04-12     
+
+
+## Doesn't show much, maybe there is a correlation between the hours of the day and calorie loss.
+
+## Merge the dataset to see trends and patterns
+
+## Sleep & Activity
+ ## Do people who sleep more are more active ?
+ 
+merged_data <- merge(Sleep, Activity, by="Id")
+head(merged_data) 
+
+merged_dataAI <- merge(Activity, Intensities, by="Id")
+
+merged_dataAC <- merge(Activity, Calories, by="Id")
+
+summary(merged_data)
+
+## Create visualization 
+
+## Activity dataset
+
+## Insight on the distribution of Different Activity Levels
+# Combine all activity levels into a single data frame for easier plotting
+activity_distribution <- Activity %>%
+  select(VeryActiveMinutes, ModeratelyActiveDistance, LightlyActiveMinutes, SedentaryMinutes) %>%
+  gather(key = "activity_level", value = "minutes")
+
+# Plot the distribution of different activity levels
+ggplot(activity_distribution, aes(x = activity_level, y = minutes)) +
+  geom_boxplot(fill = "lightgreen") +
+  labs(title = "Distribution of Different Activity Levels",
+       x = "Activity Level",
+       y = "Minutes") +
+  theme(axis.text.x = element_text(angle = 10))
+
+## Maybe a reminder when you spend too much time sedentary that it's time to move a bit.
