@@ -74,7 +74,7 @@ Mean   :2016-04-26
 3rd Qu.:2016-05-04                     
 Max.   :2016-05-12    
 
-## Average hours sleeping is 7h for 7.6h spent in bed
+## Average hours sleeping is 7 hours for 7h6 spent in bed
 
 summary(Activity)
 Id            ActivityDate         TotalSteps    TotalDistance    TrackerDistance LoggedActivitiesDistance
@@ -99,7 +99,7 @@ Mean   : 13.07      Mean   :170.1        Mean   : 995.3   Mean   :2189
 3rd Qu.: 16.00      3rd Qu.:257.0        3rd Qu.:1285.0   3rd Qu.:2667  
 Max.   :660.00      Max.   :720.0        Max.   :1440.0   Max.   :4562  
 
-## Lightly active minutes sont privilegies: almost 3h for 20 mins Very active.
+## Lightly active minutes are more present: almost 3h for 20 mins Very active.
 ## Sedentary minutes are the biggest: over 16h, maybe a reminder to work out or establishing a goal for the day could help.
 ## Total steps are mean 6547 which is a bit above what is recommended (5000) to see benefits.
 ## Step tracker goal could help.
@@ -122,7 +122,7 @@ NA's   :31
                     Max.   :1.461e+12
                     
 ## According to BMI above 25 is overweight and above 30 is obesity : 2 ID are obese, the rest is divided between overweight and normal weight.
-## Not a lot of people obese are using these items, focus marketing on staying active for people without a weight problem.
+## Not a lot of people obese are using these items, focus marketing on staying active for people without a weight problem or/and target this demographic as they would profit from it.
 
 
 summary(Intensities)
